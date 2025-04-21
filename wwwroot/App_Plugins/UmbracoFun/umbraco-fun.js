@@ -5,15 +5,15 @@ const a = [
     type: "backofficeEntryPoint",
     js: () => import("./entrypoint-bfH9azzS.js")
   }
-], n = [
+], o = [
   {
     name: "Umbraco Fun Dashboard",
     alias: "Umbraco.Fun.Dashboard",
     type: "dashboard",
-    js: () => import("./dashboard.element-DPi-51zd.js"),
+    js: () => import("./dashboard.element-BuAOzjwB.js"),
     meta: {
-      label: "Example Dashboard",
-      pathname: "example-dashboard"
+      label: "Jokes Dashboard",
+      pathname: "jokes-dashboard"
     },
     conditions: [
       {
@@ -22,11 +22,11 @@ const a = [
       }
     ]
   }
-], o = [
+], n = [
   ...a,
-  ...n
+  ...o
 ];
 export {
-  o as manifests
+  n as manifests
 };
 //# sourceMappingURL=umbraco-fun.js.map

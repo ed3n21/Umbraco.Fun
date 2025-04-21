@@ -12,7 +12,7 @@ var T = Object.defineProperty, E = Object.getOwnPropertyDescriptor, y = (t) => {
 }, b = (t, e, r) => e.has(t) || y("Cannot " + r), n = (t, e, r) => (b(t, e, "read from private field"), r ? r.call(t) : e.get(t)), h = (t, e, r) => e.has(t) ? y("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, r), M = (t, e, r, a) => (b(t, e, "write to private field"), e.set(t, r), r), u, p, _, v;
 let o = class extends U(g) {
   constructor() {
-    super(), this._yourName = "Press the button!", this._serverUserData = void 0, this._contextCurrentUser = void 0, h(this, u), h(this, p, async (t) => {
+    super(), this._yourName = "Press the button", this._serverUserData = void 0, this._contextCurrentUser = void 0, h(this, u), h(this, p, async (t) => {
       var i, s;
       const e = t.target;
       e.state = "waiting";
@@ -135,11 +135,11 @@ l([
   c()
 ], o.prototype, "_contextCurrentUser", 2);
 o = l([
-  x("example-dashboard")
+  x("jokes-dashboard")
 ], o);
 const S = o;
 export {
   o as ExampleDashboardElement,
   S as default
 };
-//# sourceMappingURL=dashboard.element-DPi-51zd.js.map
+//# sourceMappingURL=dashboard.element-BuAOzjwB.js.map
