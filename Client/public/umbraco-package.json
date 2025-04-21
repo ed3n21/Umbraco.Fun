@@ -1,0 +1,14 @@
+{
+  "id": "Umbraco.Fun",
+  "name": "Umbraco.Fun",
+  "version": "0.0.0",
+  "allowPackageTelemetry": true,
+  "extensions": [
+    {
+      "name": "Umbraco Fun Bundle",
+      "alias": "Umbraco.Fun.Bundle",
+      "type": "bundle",
+      "js": "/App_Plugins/UmbracoFun/umbraco-fun.js"
+    }
+  ]
+}
