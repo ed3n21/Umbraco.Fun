@@ -1,31 +1,53 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <PackageId>Umbraco.Fun</PackageId>
-    <Product>Umbraco.Fun</Product>
-    <Title>Umbraco.Fun</Title>
-  </PropertyGroup>
+	<PropertyGroup>
+		<PackageId>Umbraco.Fun</PackageId>
+		<Product>Umbraco.Fun</Product>
+		<Title>Umbraco.Fun</Title>
+	</PropertyGroup>
 
 
-  <ItemGroup>
-    <PackageReference Include="Umbraco.Cms.Web.Website" Version="*" />
-    <PackageReference Include="Umbraco.Cms.Web.Common" Version="*" />
-    <PackageReference Include="Umbraco.Cms.Api.Common" Version="*" />
-    <PackageReference Include="Umbraco.Cms.Api.Management" Version="*" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <!-- Dont include the client folder as part of packaging nuget build -->
-    <Content Remove="Client\**" />
+	<ItemGroup>
+		<PackageReference Include="Umbraco.Cms.Web.Website" Version="*" />
+		<PackageReference Include="Umbraco.Cms.Web.Common" Version="*" />
+		<PackageReference Include="Umbraco.Cms.Api.Common" Version="*" />
+		<PackageReference Include="Umbraco.Cms.Api.Management" Version="*" />
+	</ItemGroup>
 
-    <!-- However make the Umbraco-package.json included for dotnet pack or nuget package and visible to the solution -->
-    <None Include="Client\public\umbraco-package.json" Pack="false" />
-  </ItemGroup>
-  
+	<ItemGroup>
+		<!-- Dont include the client folder as part of packaging nuget build -->
+		<Content Remove="Client\**" />
+
+		<!-- However make the Umbraco-package.json included for dotnet pack or nuget package and visible to the solution -->
+		<None Include="Client\public\umbraco-package.json" Pack="false" />
+	</ItemGroup>
+
+	<Target Name="PublishUmbracoPlugin" AfterTargets="Build">
+		<PropertyGroup>
+			<!-- adjust these paths to wherever you want the zip to end up -->
+			<PluginPublishDir>$(ProjectDir)publish\</PluginPublishDir>
+		</PropertyGroup>
+
+		<!-- copy the compiled library -->
+		<Copy
+		  SourceFiles="$(OutputPath)$(AssemblyName).dll"
+		  DestinationFolder="$(PluginPublishDir)bin\" />
+
+		<!-- copy all your static assets (js/css/images, Razor views, etc.) -->
+		<ItemGroup>
+			<StaticAssets Include="$(ProjectDir)wwwroot\**\*" />
+		</ItemGroup>
+		<Copy
+		  SourceFiles="@(StaticAssets)"
+		  DestinationFiles="@(StaticAssets->'$(PluginPublishDir)\%(RecursiveDir)%(Filename)%(Extension)')"
+		  SkipUnchangedFiles="true" />
+	</Target>
+
+
 </Project>
