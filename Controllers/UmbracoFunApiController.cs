@@ -1,8 +1,8 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Umbraco.Cms.Core.Models.Membership;
-using Umbraco.Cms.Core.Security;
+using Umbraco.Fun.Models;
+using Umbraco.Fun.Services;
 
 namespace Umbraco.Fun.Controllers
 {
@@ -10,34 +10,19 @@ namespace Umbraco.Fun.Controllers
     [ApiExplorerSettings(GroupName = "Umbraco.Fun")]
     public class UmbracoFunApiController : UmbracoFunApiControllerBase
     {
-        private readonly IBackOfficeSecurityAccessor _backOfficeSecurityAccessor;
+        private readonly IJokeApiClient _client;
 
-        public UmbracoFunApiController(IBackOfficeSecurityAccessor backOfficeSecurityAccessor)
+        public UmbracoFunApiController(IJokeApiClient client)
         {
-            _backOfficeSecurityAccessor = backOfficeSecurityAccessor;
+            _client = client;
         }
 
-        [HttpGet("ping")]
-        [ProducesResponseType<string>(StatusCodes.Status200OK)]
-        public string Ping() => "Pong";
-
-        [HttpGet("whatsTheTimeMrWolf")]
-        [ProducesResponseType(typeof(DateTime), 200)]
-        public DateTime WhatsTheTimeMrWolf() => DateTime.Now;
-
-        [HttpGet("whatsMyName")]
-        [ProducesResponseType<string>(StatusCodes.Status200OK)]
-        public string WhatsMyName()
+        [HttpGet("jokes")]
+        [ProducesResponseType<List<Joke>>(StatusCodes.Status200OK)]
+        public async Task<List<Joke>> GetJokes()
         {
-            // So we can see a long request in the dashboard with a spinning progress wheel
-            Thread.Sleep(2000);
-
-            var currentUser = _backOfficeSecurityAccessor.BackOfficeSecurity?.CurrentUser;
-            return currentUser?.Name ?? "I have no idea who you are";
+            var jokes = await _client.GetTenJokes();
+            return jokes ?? new();
         }
-
-        [HttpGet("whoAmI")]
-        [ProducesResponseType<IUser>(StatusCodes.Status200OK)]
-        public IUser? WhoAmI() => _backOfficeSecurityAccessor.BackOfficeSecurity?.CurrentUser;
     }
 }

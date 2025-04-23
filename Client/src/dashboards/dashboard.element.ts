@@ -5,7 +5,7 @@ import { UUIButtonElement } from "@umbraco-cms/backoffice/external/uui";
 import { UMB_NOTIFICATION_CONTEXT, UmbNotificationContext } from "@umbraco-cms/backoffice/notification";
 import { UMB_CURRENT_USER_CONTEXT, UmbCurrentUserModel } from "@umbraco-cms/backoffice/current-user";
 
-@customElement('jokes-dashboard')
+@customElement('example-dashboard')
 export class ExampleDashboardElement extends UmbElementMixin(LitElement) {
 
   @state()
@@ -119,7 +119,7 @@ export class ExampleDashboardElement extends UmbElementMixin(LitElement) {
 
         <uui-box headline="What's my Name?">
             <div slot="header">[Server]</div>
-            <h2><uui-icon name="icon-user"></uui-icon> ${this._yourName }</h2>
+            <h2><uui-icon name="icon-user"></uui-icon> ${this._yourName}</h2>
             <uui-button color="default" look="primary" @click="${this.#onClickWhatsMyName}">
                 Whats my name?
             </uui-button>
@@ -146,24 +146,24 @@ export class ExampleDashboardElement extends UmbElementMixin(LitElement) {
 
   static styles = [
     css`
-            :host {
-                display: grid;
-                gap: var(--uui-size-layout-1);
-                padding: var(--uui-size-layout-1);
-                grid-template-columns: 1fr 1fr 1fr;
-            }
+      :host {
+        display: grid;
+        gap: var(--uui-size-layout-1);
+        padding: var(--uui-size-layout-1);
+        grid-template-columns: 1fr 1fr 1fr;
+      }
 
-            uui-box {
-                margin-bottom: var(--uui-size-layout-1);
-            }
+      uui-box {
+        margin-bottom: var(--uui-size-layout-1);
+      }
 
-            h2 {
-                margin-top:0;
-            }
+      h2 {
+        margin-top:0;
+      }
 
-            .wide {
-                grid-column: span 3;
-            }
+      .wide {
+        grid-column: span 3;
+      }
     `];
 }
 
@@ -171,6 +171,6 @@ export default ExampleDashboardElement;
 
 declare global {
   interface HTMLElementTagNameMap {
-    'jokes-dashboard': ExampleDashboardElement;
+    'example-dashboard': ExampleDashboardElement;
   }
 }

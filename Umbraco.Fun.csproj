@@ -12,20 +12,11 @@
 		<Title>Umbraco.Fun</Title>
 	</PropertyGroup>
 
-
 	<ItemGroup>
 		<PackageReference Include="Umbraco.Cms.Web.Website" Version="*" />
 		<PackageReference Include="Umbraco.Cms.Web.Common" Version="*" />
 		<PackageReference Include="Umbraco.Cms.Api.Common" Version="*" />
 		<PackageReference Include="Umbraco.Cms.Api.Management" Version="*" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<!-- Dont include the client folder as part of packaging nuget build -->
-		<Content Remove="Client\**" />
-
-		<!-- However make the Umbraco-package.json included for dotnet pack or nuget package and visible to the solution -->
-		<None Include="Client\public\umbraco-package.json" Pack="false" />
 	</ItemGroup>
 
 	<Target Name="PublishUmbracoPlugin" AfterTargets="Build">
@@ -35,19 +26,13 @@
 		</PropertyGroup>
 
 		<!-- copy the compiled library -->
-		<Copy
-		  SourceFiles="$(OutputPath)$(AssemblyName).dll"
-		  DestinationFolder="$(PluginPublishDir)bin\" />
+		<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(PluginPublishDir)bin\" />
 
 		<!-- copy all your static assets (js/css/images, Razor views, etc.) -->
 		<ItemGroup>
 			<StaticAssets Include="$(ProjectDir)wwwroot\**\*" />
 		</ItemGroup>
-		<Copy
-		  SourceFiles="@(StaticAssets)"
-		  DestinationFiles="@(StaticAssets->'$(PluginPublishDir)\%(RecursiveDir)%(Filename)%(Extension)')"
-		  SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(StaticAssets)" DestinationFiles="@(StaticAssets->'$(PluginPublishDir)\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
 	</Target>
-
 
 </Project>

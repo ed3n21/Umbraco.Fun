@@ -1,6 +1,6 @@
 import { LitElement as g, html as f, css as w, state as c, customElement as x } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as U } from "@umbraco-cms/backoffice/element-api";
-import { U as d } from "./services.gen-B1FTPr83.js";
+import { U as d } from "./services-CwRtMm4o.js";
 import { UMB_NOTIFICATION_CONTEXT as C } from "@umbraco-cms/backoffice/notification";
 import { UMB_CURRENT_USER_CONTEXT as W } from "@umbraco-cms/backoffice/current-user";
 var T = Object.defineProperty, E = Object.getOwnPropertyDescriptor, y = (t) => {
@@ -102,24 +102,24 @@ _ = /* @__PURE__ */ new WeakMap();
 v = /* @__PURE__ */ new WeakMap();
 o.styles = [
   w`
-            :host {
-                display: grid;
-                gap: var(--uui-size-layout-1);
-                padding: var(--uui-size-layout-1);
-                grid-template-columns: 1fr 1fr 1fr;
-            }
+      :host {
+        display: grid;
+        gap: var(--uui-size-layout-1);
+        padding: var(--uui-size-layout-1);
+        grid-template-columns: 1fr 1fr 1fr;
+      }
 
-            uui-box {
-                margin-bottom: var(--uui-size-layout-1);
-            }
+      uui-box {
+        margin-bottom: var(--uui-size-layout-1);
+      }
 
-            h2 {
-                margin-top:0;
-            }
+      h2 {
+        margin-top:0;
+      }
 
-            .wide {
-                grid-column: span 3;
-            }
+      .wide {
+        grid-column: span 3;
+      }
     `
 ];
 l([
@@ -135,11 +135,11 @@ l([
   c()
 ], o.prototype, "_contextCurrentUser", 2);
 o = l([
-  x("jokes-dashboard")
+  x("example-dashboard")
 ], o);
 const S = o;
 export {
   o as ExampleDashboardElement,
   S as default
 };
-//# sourceMappingURL=dashboard.element-BuAOzjwB.js.map
+//# sourceMappingURL=dashboard.element-DzTDT4Vo.js.map

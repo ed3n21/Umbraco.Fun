@@ -3,7 +3,7 @@
 import { createClient, createConfig, type Options } from '@hey-api/client-fetch';
 import type { PingError, PingResponse, WhatsMyNameError, WhatsMyNameResponse, WhatsTheTimeMrWolfError, WhatsTheTimeMrWolfResponse, WhoAmIError, WhoAmIResponse } from './types.gen';
 
-export const client = createClient(createConfig());
+const client = createClient(createConfig());
 
 export class UmbracoFunService {
     public static ping<ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) {

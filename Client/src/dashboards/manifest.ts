@@ -1,12 +1,12 @@
 export const manifests: Array<UmbExtensionManifest> = [
   {
-    name: "Umbraco Fun Dashboard",
-    alias: "Umbraco.Fun.Dashboard",
+    name: "Umbraco Example Dashboard",
+    alias: "Umbraco.Example.Dashboard",
     type: 'dashboard',
     js: () => import("./dashboard.element"),
     meta: {
-      label: "Jokes Dashboard",
-      pathname: "jokes-dashboard"
+      label: "Example Dashboard",
+      pathname: "example-dashboard"
     },
     conditions: [
       {
@@ -14,5 +14,21 @@ export const manifests: Array<UmbExtensionManifest> = [
         match: 'Umb.Section.Content',
       }
     ],
+  },
+  {
+    name: 'Umbraco Fun Dashboard',
+    alias: 'Umbraco.Fun.Dashboard',
+    type: 'dashboard',
+    js: () => import("./dashboard.element.jokes"),
+    meta: {
+      label: 'Jokes Dashboard',
+      pathname: 'jokes-dashboard'
+    },
+    conditions: [
+      {
+        alias: 'Umb.Condition.SectionAlias',
+        match: 'Umb.Section.Content',
+      }
+    ]
   }
 ];
