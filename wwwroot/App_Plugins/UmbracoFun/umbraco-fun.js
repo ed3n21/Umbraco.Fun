@@ -26,7 +26,7 @@ const a = [
     name: "Umbraco Fun Dashboard",
     alias: "Umbraco.Fun.Dashboard",
     type: "dashboard",
-    js: () => import("./dashboard.element.jokes-QJ4l9qn2.js"),
+    js: () => import("./dashboard.element.jokes-BtkdMn_N.js"),
     meta: {
       label: "Jokes Dashboard",
       pathname: "jokes-dashboard"

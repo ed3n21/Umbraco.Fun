@@ -1,9 +1,9 @@
 import { LitElement, customElement, html, css, repeat, state, nothing, query } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 import { Joke, JokesService } from "../api"
-import { UUIButtonElement, UUIPaginationElement, UUISymbolSortElement } from "@umbraco-cms/backoffice/external/uui";
-import { UMB_NOTIFICATION_CONTEXT, UmbNotificationContext } from "@umbraco-cms/backoffice/notification";
+import { UUIButtonElement, UUISymbolSortElement } from "@umbraco-cms/backoffice/external/uui";
 import "../components/disclaimer-box";
+import "../components/select-multiple";
 
 @customElement('jokes-dashboard')
 export class JokesDashboardElement extends UmbElementMixin(LitElement) {
@@ -11,47 +11,42 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
     @state()
     private _jokes: Joke[] = [];
 
-    constructor() {
-        super();
-
-        this.consumeContext(UMB_NOTIFICATION_CONTEXT, (notificationContext) => {
-            this.#notificationContext = notificationContext;
-        });
+    async firstUpdated() {
+        this.#getJokes();
     }
 
-    #notificationContext: UmbNotificationContext | undefined;
+    #getJokes = async () =>  {
+        const { data, error } = await JokesService.getJokes();
+
+        if (error) {
+            console.error(error);
+        }
+
+        if (data !== undefined) {
+            this._jokes = this._jokes.concat(data);
+        }
+
+        return {data, error};
+    }
 
     #onClickGetJokes = async (ev: Event) => {
         const buttonElement = ev.target as UUIButtonElement;
         buttonElement.state = "waiting";
 
-        const { data, error } = await JokesService.getJokes();
+        const { data, error } = await this.#getJokes();
 
         if (error) {
             buttonElement.state = "failed";
-            console.error(error);
             return;
         }
 
+        // If data was received, reset button state to default
         if (data !== undefined) {
-            this._jokes = this._jokes.concat(data);
-            buttonElement.state = "success";
-        }
-
-        if (this.#notificationContext) {
-            this.#notificationContext.peek("warning", {
-                data: {
-                    headline: `Jokes Re-supply`,
-                    message: `Delivered ${data?.length ?? 0} jokes`,
-                }
-            })
+            buttonElement.state = undefined;
         }
     }
 
     // Table Settings
-    @state()
-    private _currentPage = 1;
-
     @state()
     private _sortActive = false;
 
@@ -60,66 +55,44 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
 
     @query('uui-symbol-sort')
     private _sorter?: UUISymbolSortElement;
+    
+    #onClickSort = () => {
+        if (!this._sorter) return;
 
-    @query('uui-pagination', true)
-    private _paginator?: UUIPaginationElement;
-
-    private _pageSize = 5;
-
-    #onPageChange(e: CustomEvent) {
-        this._currentPage = (e.target as UUIPaginationElement).current;
-    }
-
-    #onSortClick = () => {
-        if (this._sorter) {
-            if (!this._sorter.active) {
-                this._sorter.active = true;
-            }
-            else if (this._sorter.active && this._sorter.descending) {
-                this._sorter.active = false;
-                this._sorter.descending = false;
-            }
-            else {
-                this._sorter.descending = !this._sorter.descending;
-            }
-
-            if (this._paginator) {
-                this._paginator.current = 1;
-
-                this._paginator.dispatchEvent(new Event('change', {
-                    bubbles: true,
-                    composed: true
-                  }));
-            }
+        // Manage sort states
+        if (!this._sorter.active) {
+            this._sorter.active = true;
+            this._jokes = this.sortByType(this._jokes, 'type', this._sorter.descending);
+        }
+        else if (this._sorter.active && this._sorter.descending) {
+            this._sorter.active = false;
+            this._sorter.descending = false;
+            console.log('this._sorter.descending', this._sorter.descending);
+        }
+        else {
+            this._sorter.descending = !this._sorter.descending;
+            this._jokes = this.sortByType(this._jokes, 'type', this._sorter.descending);
         }
     }
 
-    sortByType(arr: Joke[], key: keyof Joke, direction: 'asc' | 'desc'): Joke[] {
+    sortByType(arr: Joke[], key: keyof Joke, descending: boolean): Joke[] {
         return [...arr].sort((a, b) => {
             const valA = String(a[key]).toLowerCase();
             const valB = String(b[key]).toLowerCase();
         
             const comparison = valA.localeCompare(valB);
-            return direction === 'asc' ? comparison : -comparison;
+            return descending ? -comparison : comparison;
         })
     }
 
     render() {
-        const startIndex = (this._currentPage - 1) * this._pageSize;
-        const endIndex = startIndex + this._pageSize;
-        const visibleJokes = this._jokes.slice(startIndex, endIndex);
-
         return html`
-            <uui-box headline="Jokes Controls">
-                <div slot="header">[Server]</div>
-                <uui-button color="default" look="primary" @click="${this.#onClickGetJokes}">
-                    Request Jokes
-                </uui-button>
-                <p>This endpoint gets you a list of jokes.</p>
-            </uui-box>
-
             ${this._jokes.length
                 ? html`
+                    <uui-box headline="Filters" class="wide">
+                        <select-multiple .options=${['dad', 'general']}></select-multiple>
+                    </uui-box>
+
                     <uui-box headline="Jokes" class="wide">
                         <uui-table
                             aria-label="Table With Jokes"
@@ -129,7 +102,7 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
                             <uui-table-column style="width: 45%; background-color: "></uui-table-column>
                             <uui-table-column style="width: 45%; background-color: "></uui-table-column>
                             <uui-table-head style="background-color: ; color: ">
-                                <uui-table-head-cell id="joke-type-header" @click=${this.#onSortClick}>
+                                <uui-table-head-cell id="joke-type-header" @click=${this.#onClickSort}>
                                     Type
                                     <uui-symbol-sort 
                                         .active=${this._sortActive}
@@ -140,7 +113,7 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
                                 <uui-table-head-cell>Punchline</uui-table-head-cell>
                             </uui-table-head>
                             ${repeat(
-                                visibleJokes,
+                                this._jokes,
                                 joke => joke.id,
                                 joke => html`
                                     <uui-table-row>
@@ -152,11 +125,11 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
                                     </uui-table-row>`
                             )}
                         </uui-table>
-                        <uui-pagination
-                            .total=${Math.ceil(this._jokes.length / this._pageSize)}
-                            .current=${this._currentPage}
-                            @change=${this.#onPageChange}
-                        ></uui-pagination>
+                        <div style="text-align: center">
+                            <uui-button color="default" look="primary" @click="${this.#onClickGetJokes}" class="center">
+                                Load more...
+                            </uui-button>
+                        </div>
                     </uui-box>
                 `
                 : nothing}
