@@ -3,6 +3,7 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<!-- Path for accessing all static assets (js/css/images, etc.)-->
 		<StaticWebAssetBasePath>/</StaticWebAssetBasePath>
 	</PropertyGroup>
 
