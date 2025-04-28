@@ -1,3 +1,13 @@
+// Inject the built CSS dynamically
+const linkId = 'umbraco-fun-style'
+if (!document.getElementById(linkId)) {
+    const link = document.createElement('link');
+    link.id = linkId;
+    link.rel = 'stylesheet';
+    link.href = '/App_Plugins/UmbracoFun/style.css';
+    document.head.appendChild(link);
+}
+
 import { LitElement, customElement, html, css, repeat, state, nothing, query } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 import { Joke, JokesService } from "../api"
@@ -84,7 +94,7 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
         // Manage sort states
         if (!this._sorter.active) {
             this._sorter.active = true;
-            this._jokes = this.#sortByType(this._jokes, 'type', this._sorter.descending);
+            this._filteredJokes = this.#sortByType(this._filteredJokes, 'type', this._sorter.descending);
         }
         else if (this._sorter.active && this._sorter.descending) {
             this._sorter.active = false;
@@ -92,7 +102,7 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
         }
         else {
             this._sorter.descending = !this._sorter.descending;
-            this._jokes = this.#sortByType(this._jokes, 'type', this._sorter.descending);
+            this._filteredJokes = this.#sortByType(this._filteredJokes, 'type', this._sorter.descending);
         }
     }
 
@@ -147,7 +157,7 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
                                 joke => joke.id,
                                 joke => html`
                                     <uui-table-row>
-                                        <uui-table-cell>${joke.type}</uui-table-cell>
+                                        <uui-table-cell><i>${joke.type}</i></uui-table-cell>
                                         <uui-table-cell>${joke.setup}</uui-table-cell>
                                         <uui-table-cell>
                                             <disclaimer-box text=${joke.punchline}></disclaimer-box>

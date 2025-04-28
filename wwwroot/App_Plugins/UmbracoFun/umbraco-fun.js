@@ -3,14 +3,14 @@ const a = [
     name: "Umbraco Fun Entrypoint",
     alias: "Umbraco.Fun.Entrypoint",
     type: "backofficeEntryPoint",
-    js: () => import("./entrypoint-Dst_Epsx.js")
+    js: () => import("./entrypoint-DpsD4CHO.js")
   }
 ], o = [
   {
     name: "Umbraco Fun Dashboard",
     alias: "Umbraco.Fun.Dashboard",
     type: "dashboard",
-    js: () => import("./dashboard.element.jokes-YZ0QjCSK.js"),
+    js: () => import("./dashboard.element.jokes-BHPpm_fb.js"),
     meta: {
       label: "Jokes Dashboard",
       pathname: "jokes-dashboard"

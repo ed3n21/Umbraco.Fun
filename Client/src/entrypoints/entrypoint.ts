@@ -1,4 +1,4 @@
-import { UmbEntryPointOnInit } from '@umbraco-cms/backoffice/extension-api';
+import { UmbEntryPointOnInit, UmbEntryPointOnUnload } from '@umbraco-cms/backoffice/extension-api';
 import { UMB_AUTH_CONTEXT } from '@umbraco-cms/backoffice/auth';
 import { client } from '../api';
 
@@ -25,4 +25,8 @@ export const onInit: UmbEntryPointOnInit = (_host, _extensionRegistry) => {
       return request;
     });
   });
+};
+
+export const onUnload: UmbEntryPointOnUnload = (_host, _extensionRegistry) => {
+  console.log('Goodbye from my extension 👋');
 };

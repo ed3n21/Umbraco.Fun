@@ -8,26 +8,7 @@ export class DisclaimerBox extends LitElement {
     @state()
     private revealed = false
 
-    static styles = css`
-        .disclaimer {
-            filter: blur(4px);
-            cursor: pointer;
-            transition: filter 0.3s ease;
-            user-select: none;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 1rem;
-            border-radius: 0.5rem;
-            color: #444;
-        }
-
-        .disclaimer.revealed {
-            filter: none;
-            cursor: default;
-            user-select: text;
-        }
-    `
-
-    private reveal() {
+    #reveal = () => {
         this.revealed = true
     }
 
@@ -35,10 +16,26 @@ export class DisclaimerBox extends LitElement {
         return html`
             <div
                 class="disclaimer ${this.revealed ? 'revealed' : ''}"
-                @click=${this.reveal}
+                @click=${this.#reveal}
             >
                 ${this.text}
             </div>
         `
     }
+
+    static styles = css`
+        .disclaimer {
+            filter: blur(4px);
+            cursor: pointer;
+            transition: filter 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 0.5rem;
+            color: #444;
+        }
+
+        .disclaimer.revealed {
+            filter: none;
+            cursor: default;
+        }
+    `
 }
