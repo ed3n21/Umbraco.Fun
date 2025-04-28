@@ -84,20 +84,19 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
         // Manage sort states
         if (!this._sorter.active) {
             this._sorter.active = true;
-            this._jokes = this.sortByType(this._jokes, 'type', this._sorter.descending);
+            this._jokes = this.#sortByType(this._jokes, 'type', this._sorter.descending);
         }
         else if (this._sorter.active && this._sorter.descending) {
             this._sorter.active = false;
             this._sorter.descending = false;
-            console.log('this._sorter.descending', this._sorter.descending);
         }
         else {
             this._sorter.descending = !this._sorter.descending;
-            this._jokes = this.sortByType(this._jokes, 'type', this._sorter.descending);
+            this._jokes = this.#sortByType(this._jokes, 'type', this._sorter.descending);
         }
     }
 
-    sortByType = (arr: Joke[], key: keyof Joke, descending: boolean): Joke[] => {
+    #sortByType = (arr: Joke[], key: keyof Joke, descending: boolean): Joke[] => {
         return [...arr].sort((a, b) => {
             const valA = String(a[key]).toLowerCase();
             const valB = String(b[key]).toLowerCase();
@@ -108,41 +107,31 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
     }
 
     #handleFiltersChanged = (event: CustomEvent) => {
-        console.log('Selected types:', this._selectedTypes)
-        this._selectedTypes = event.detail.selectedValues
+        this._selectedTypes = event.detail.selectedValues;
         this.#filterJokes();
     }
 
-    // #filterJokes = (condition: (joke: Joke) => boolean) : Joke[] => this._jokes.filter(condition);
     #filterJokes = () => {
         if (!this._selectedTypes.length)
             this._filteredJokes = this._jokes;
         else
-            this._filteredJokes = this._jokes.filter(j => this._selectedTypes.includes(j.type))
+            this._filteredJokes = this._jokes.filter(j => this._selectedTypes.includes(j.type));
     }
 
     render() {
         return html`
             ${this._jokes.length
                 ? html`
-                    <uui-box headline="Filters" class="">
+                    <uui-box headline="Filters">
                         <select-multiple .options=${this._jokeTypes} @values-changed=${this.#handleFiltersChanged}></select-multiple>
-                    </uui-box>
-                    <uui-box headline="" class="">
-                        <uui-button color="default" look="primary" @click="${this.#onClickGetJokes}">
-                            Test Cancellation Token
-                        </uui-button>
                     </uui-box>
 
                     <uui-box headline="Jokes" class="wide">
-                        <uui-table
-                            aria-label="Table With Jokes"
-                            aria-describedby="table-description"
-                            >
-                            <uui-table-column style="font-style: italic; background-color:"></uui-table-column>
-                            <uui-table-column style="width: 45%; background-color: "></uui-table-column>
-                            <uui-table-column style="width: 45%; background-color: "></uui-table-column>
-                            <uui-table-head style="background-color: ; color: ">
+                        <uui-table aria-label="Table With Jokes" aria-describedby="table-description" >
+                            <uui-table-column style="font-style: italic;"></uui-table-column>
+                            <uui-table-column style="width: 45%;"></uui-table-column>
+                            <uui-table-column style="width: 45%;"></uui-table-column>
+                            <uui-table-head>
                                 <uui-table-head-cell id="joke-type-header" @click=${this.#onClickSort}>
                                     Type
                                     <uui-symbol-sort 
@@ -166,8 +155,9 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
                                     </uui-table-row>`
                             )}
                         </uui-table>
-                        <div style="text-align: center">
-                            <uui-button color="default" look="primary" @click="${this.#onClickGetJokes}" class="center">
+
+                        <div style="text-align: center;">
+                            <uui-button color="default" look="primary" @click="${this.#onClickGetJokes}">
                                 Load more...
                             </uui-button>
                         </div>
@@ -194,6 +184,7 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
                 grid-column: span 3;
             }
 
+            /* Disclaimer styles */
             .disclaimer {
                 filter: blur(4px);
                 cursor: pointer;
@@ -211,6 +202,7 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
                 user-select: text;
             }
 
+            /* Styles for table header with sort button */
             #joke-type-header {
                 cursor: pointer;
             }
