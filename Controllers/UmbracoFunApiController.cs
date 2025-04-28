@@ -19,9 +19,17 @@ namespace Umbraco.Fun.Controllers
 
         [HttpGet("jokes")]
         [ProducesResponseType<List<Joke>>(StatusCodes.Status200OK)]
-        public async Task<List<Joke>> GetJokes()
+        public async Task<List<Joke>> GetJokes(CancellationToken cancellationToken)
         {
-            var jokes = await _client.GetTenJokes();
+            var jokes = await _client.GetTenJokes(cancellationToken);
+            return jokes ?? new();
+        }
+        
+        [HttpGet("jokes/types")]
+        [ProducesResponseType<List<string>>(StatusCodes.Status200OK)]
+        public async Task<List<string>> GetJokeTypes()
+        {
+            var jokes = await _client.GetJokeTypes();
             return jokes ?? new();
         }
     }

@@ -7,7 +7,8 @@ namespace Umbraco.Fun.Services
 {
     public interface IJokeApiClient
     {
-        Task<List<Joke>> GetTenJokes();
+        Task<List<Joke>> GetTenJokes(CancellationToken cancellationToken);
+        Task<List<string>> GetJokeTypes();
     }
 
     public class JokeApiClient : IJokeApiClient
@@ -21,9 +22,9 @@ namespace Umbraco.Fun.Services
             _config = options.Value;
         }
 
-        public async Task<List<Joke>> GetTenJokes()
+        public async Task<List<Joke>> GetTenJokes(CancellationToken cancellationToken)
         {
-            var response = await _client.GetAsync($"jokes/random/{_config.BatchSize}");
+            var response = await _client.GetAsync($"jokes/random/{_config.BatchSize}", cancellationToken);
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
@@ -36,6 +37,23 @@ namespace Umbraco.Fun.Services
                 throw new InvalidOperationException("Failed to deserialize jokes");
 
             return jokes;
+        }
+        
+        public async Task<List<string>> GetJokeTypes()
+        {
+            var response = await _client.GetAsync("types");
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var jokeTypes = JsonSerializer.Deserialize<List<string>>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            if (jokeTypes == null)
+                throw new InvalidOperationException("Failed to deserialize jokes");
+
+            return jokeTypes;
         }
     }
 }

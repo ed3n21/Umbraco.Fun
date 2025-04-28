@@ -11,8 +11,15 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
     @state()
     private _jokes: Joke[] = [];
 
+    @state()
+    private _jokeTypes: string[] = [];
+
+    @state()
+    private _filteredJokes: Joke[] = [];
+
     async firstUpdated() {
         this.#getJokes();
+        this.#getJokeTypes();
     }
 
     #getJokes = async () =>  {
@@ -24,9 +31,21 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
 
         if (data !== undefined) {
             this._jokes = this._jokes.concat(data);
+            // Because of filtering we will not receive the full-size batch if any filter is applied
+            this.#filterJokes();
         }
 
         return {data, error};
+    }
+    
+    #getJokeTypes = async () =>  {
+        const { data, error } = await JokesService.getJokeTypes();
+
+        if (error)
+            console.error(error);
+
+        if (data !== undefined)
+            this._jokeTypes = data;
     }
 
     #onClickGetJokes = async (ev: Event) => {
@@ -53,6 +72,9 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
     @state()
     private _sortDescending = false;
 
+    @state()
+    private _selectedTypes: string[] = [];
+
     @query('uui-symbol-sort')
     private _sorter?: UUISymbolSortElement;
     
@@ -75,7 +97,7 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
         }
     }
 
-    sortByType(arr: Joke[], key: keyof Joke, descending: boolean): Joke[] {
+    sortByType = (arr: Joke[], key: keyof Joke, descending: boolean): Joke[] => {
         return [...arr].sort((a, b) => {
             const valA = String(a[key]).toLowerCase();
             const valB = String(b[key]).toLowerCase();
@@ -85,12 +107,31 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
         })
     }
 
+    #handleFiltersChanged = (event: CustomEvent) => {
+        console.log('Selected types:', this._selectedTypes)
+        this._selectedTypes = event.detail.selectedValues
+        this.#filterJokes();
+    }
+
+    // #filterJokes = (condition: (joke: Joke) => boolean) : Joke[] => this._jokes.filter(condition);
+    #filterJokes = () => {
+        if (!this._selectedTypes.length)
+            this._filteredJokes = this._jokes;
+        else
+            this._filteredJokes = this._jokes.filter(j => this._selectedTypes.includes(j.type))
+    }
+
     render() {
         return html`
             ${this._jokes.length
                 ? html`
-                    <uui-box headline="Filters" class="wide">
-                        <select-multiple .options=${['dad', 'general']}></select-multiple>
+                    <uui-box headline="Filters" class="">
+                        <select-multiple .options=${this._jokeTypes} @values-changed=${this.#handleFiltersChanged}></select-multiple>
+                    </uui-box>
+                    <uui-box headline="" class="">
+                        <uui-button color="default" look="primary" @click="${this.#onClickGetJokes}">
+                            Test Cancellation Token
+                        </uui-button>
                     </uui-box>
 
                     <uui-box headline="Jokes" class="wide">
@@ -113,7 +154,7 @@ export class JokesDashboardElement extends UmbElementMixin(LitElement) {
                                 <uui-table-head-cell>Punchline</uui-table-head-cell>
                             </uui-table-head>
                             ${repeat(
-                                this._jokes,
+                                this._filteredJokes,
                                 joke => joke.id,
                                 joke => html`
                                     <uui-table-row>

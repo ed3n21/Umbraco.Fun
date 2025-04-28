@@ -1,47 +1,72 @@
-import { LitElement, html, css, customElement, state, property, repeat } from '@umbraco-cms/backoffice/external/lit'
+import { LitElement, html, css, customElement, property, repeat } from '@umbraco-cms/backoffice/external/lit'
+import '@shoelace-style/shoelace/dist/components/select/select.js'
+import '@shoelace-style/shoelace/dist/components/option/option.js'
 
 @customElement('select-multiple')
 export class SelectMultiple extends LitElement {
     @property({type: Array})
     options: string[] = [];
 
-    // @state()
-    // private revealed = false
-
     private handleFilterChange(e: Event) {
-        const selectedOptions = Array.from((e.target as HTMLSelectElement).selectedOptions)
-        const values = selectedOptions.map(opt => opt.value)
-        console.log('Selected filter values:', values)
-        // Apply filtering logic here
+        const selected = e.target as HTMLSelectElement
+        const selectedValues = Array.from(selected.selectedOptions).map(option => option.value)
+
+        this.dispatchEvent(new CustomEvent('values-changed', {
+            detail: { selectedValues: selectedValues },
+            bubbles: true,
+            composed: true
+          }))
     }
 
     render() {
         return html`
-            <select id="filter" multiple @change=${this.handleFilterChange}>
+            <sl-select label="" placeholder="Category..." clearable multiple max-options-visible="2" @sl-change=${this.handleFilterChange}>
                 ${repeat(
                     this.options,
-                    option => html`<option value=${option}>${option}</option>`
+                    option => html`<sl-option value=${option}>${option}</sl-option>`
                 )}
-            </select>
+            </sl-select>
         `
     }
 
     static styles = css`
-        .disclaimer {
-            filter: blur(4px);
-            cursor: pointer;
-            transition: filter 0.3s ease;
-            user-select: none;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 1rem;
-            border-radius: 0.5rem;
-            color: #444;
+        /* Style the main select box */
+        sl-select {
+            width: 300px;
         }
 
-        .disclaimer.revealed {
-            filter: none;
-            cursor: default;
-            user-select: text;
+        sl-select::part(form-control) {
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background-color: #fff;
+            padding: 0.3rem 0.6rem;
+            font-size: 14px;
+            box-shadow: none;
+        }
+
+        sl-select::part(combobox) {
+            height: 25px;
+        }
+
+        /* On focus */
+        sl-select:focus-within::part(form-control) {
+            border-color: #283566;
+            outline: none;
+        }
+
+        /* Style each tag inside the multiselect */
+        sl-select::part(tag) {
+            box-shadow: none !important;
+            font-size: 13px;
+            border-radius: 4px;
+            padding: 0 3px;
+        }
+
+        /* Each option */
+        sl-option::part(base) {
+            font-size: 14px;
+            padding-top: 3px;
+            background-color: white;
         }
     `
 }

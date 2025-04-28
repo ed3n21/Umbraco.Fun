@@ -8,3 +8,7 @@ export type Joke = {
 export type JokesResponse = Joke[];
 
 export type JokesError = (unknown);
+
+export type JokeTypesResponse = string[];
+
+export type JokeTypesError = (unknown);

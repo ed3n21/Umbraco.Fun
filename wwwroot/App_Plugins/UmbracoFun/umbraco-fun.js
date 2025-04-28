@@ -3,14 +3,14 @@ const a = [
     name: "Umbraco Fun Entrypoint",
     alias: "Umbraco.Fun.Entrypoint",
     type: "backofficeEntryPoint",
-    js: () => import("./entrypoint-DN0XslvA.js")
+    js: () => import("./entrypoint-aMN5CR8h.js")
   }
 ], o = [
   {
     name: "Umbraco Example Dashboard",
     alias: "Umbraco.Example.Dashboard",
     type: "dashboard",
-    js: () => import("./dashboard.element-DzTDT4Vo.js"),
+    js: () => import("./dashboard.element-DtIQVJs8.js"),
     meta: {
       label: "Example Dashboard",
       pathname: "example-dashboard"
@@ -26,7 +26,7 @@ const a = [
     name: "Umbraco Fun Dashboard",
     alias: "Umbraco.Fun.Dashboard",
     type: "dashboard",
-    js: () => import("./dashboard.element.jokes-BtkdMn_N.js"),
+    js: () => import("./dashboard.element.jokes-BgD9GKHU.js"),
     meta: {
       label: "Jokes Dashboard",
       pathname: "jokes-dashboard"
