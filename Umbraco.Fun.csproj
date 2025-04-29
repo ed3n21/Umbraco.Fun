@@ -11,10 +11,25 @@
 		<PackageId>Umbraco.Fun</PackageId>
 		<Product>Umbraco.Fun</Product>
 		<Title>Umbraco.Fun</Title>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<RepositoryUrl>https://github.com/ed3n21/Umbraco.Fun</RepositoryUrl>
+		<Description>Custom dashboard with jokes for Umbraco.</Description>
+		<PackageTags>umbraco plugin package</PackageTags>
+		<Version>1.0.1</Version>
+		<Authors>Maksym Liuban</Authors>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
-
+	
 	<ItemGroup>
 		<PackageReference Include="Umbraco.Cms.Web.Common" Version="*" />
 		<PackageReference Include="Umbraco.Cms.Api.Common" Version="*" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Dont include the client folder as part of packaging nuget build -->
+		<Content Remove="Client\**" />
+
+		<!-- However make the umbraco-package.json included for dotnet pack or nuget package and visible to the solution -->
+		<None Include="Client\public\umbraco-package.json" Pack="false" />
 	</ItemGroup>
 </Project>
